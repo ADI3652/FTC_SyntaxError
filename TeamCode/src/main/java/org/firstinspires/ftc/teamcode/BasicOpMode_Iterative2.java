@@ -180,8 +180,9 @@ public class BasicOpMode_Iterative2 extends OpMode{
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f), lift (%.2f), markServo (%.2f)", leftPower, rightPower, liftMotorStatus, markerStatus);
-
+        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Lift", liftMotorStatus);
+        telemetry.addData("MarkerServo", markerStatus);
 
         telemetry.addData("Status", "Running");
         telemetry.update();

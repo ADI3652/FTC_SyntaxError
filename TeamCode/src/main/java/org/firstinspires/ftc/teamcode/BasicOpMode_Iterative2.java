@@ -59,7 +59,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor liftMotor = null;
-    private Servo markerDropper = null;
+    private Servo servo0 = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -73,7 +73,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
         leftDrive  = hardwareMap.get(DcMotor.class, "MotorLeft");
         rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
         liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
-        markerDropper = hardwareMap.get(Servo.class, "MarkerDropper")
+        servo0 = hardwareMap.get(Servo.class, "servo0")
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -146,16 +146,16 @@ public class BasicOpMode_Iterative2 extends OpMode{
 
 
         String liftMotorStatus;
-        //this gives the status of the servo motor to the phone
+        //this gives the status of the motor to the phone
         if(gamepad1.dpad_down) {
 
             liftMotor.setPower(-1);
-            liftMotorStatus = "Down";
+            liftMotorStatus = "retracting";
         }
         else if (gamepad1.dpad_up) {
 
             liftMotor.setPower(1);
-            liftMotorStatus = "Up";
+            liftMotorStatus = "extending";
         }
         else{
 
@@ -164,21 +164,23 @@ public class BasicOpMode_Iterative2 extends OpMode{
         }
 
         //////////////////////////////////////////////////////////////
-
+        String markerStatus;
         if(gamepad1.b){
-
-            markerDropper.setPosition(0);
+            servo0.setPosition(0);
+            markerStatus = "0";
         }
         if(gamepad1.a){
-            markerDropper.setPosition(0.5);
+            servo0.setPosition(0.5);
+            markerStatus = "90";
         }
         if(gamepad1.x){
-            markerDropper.setPosition(1);
+            servo0.setPosition(1);
+            markerStatus = "180";
         }
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f), lift (%.2f)", leftPower, rightPower, liftMotorStatus);
+        telemetry.addData("Motors", "left (%.2f), right (%.2f), lift (%.2f), markServo (%.2f)", leftPower, rightPower, liftMotorStatus, markerStatus);
 
 
         telemetry.addData("Status", "Running");

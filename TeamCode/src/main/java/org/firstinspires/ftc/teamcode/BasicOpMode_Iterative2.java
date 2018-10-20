@@ -147,12 +147,12 @@ public class BasicOpMode_Iterative2 extends OpMode{
         //this gives the status of the servo motor to the phone
         if(gamepad1.dpad_down) {
             // move to 0 degrees or backward.
-            servo1.setPosition(0);
+            servo1.setPosition(1);
             servoStatus = "Down";
         }
         else if (gamepad1.dpad_up) {
             // move to 180 degrees or forward.
-            servo1.setPosition(1);
+            servo1.setPosition(0);
             servoStatus = "Up";
         }
         else{

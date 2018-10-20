@@ -83,7 +83,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
 ////////////////////
-        // servo1 = hardwareMap.get(Servo.class, "servo0");
+
 
         // Wait for the start button
         telemetry.addData(">", "Press Start" );
@@ -114,7 +114,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
-        //double servoPower;
+
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
@@ -148,17 +148,17 @@ public class BasicOpMode_Iterative2 extends OpMode{
         String liftMotorStatus;
         //this gives the status of the servo motor to the phone
         if(gamepad1.dpad_down) {
-            // move to 0 degrees or backward.
+
             liftMotor.setPower(-1);
             liftMotorStatus = "Down";
         }
         else if (gamepad1.dpad_up) {
-            // move to 180 degrees or forward.
+
             liftMotor.setPower(1);
             liftMotorStatus = "Up";
         }
         else{
-            //move to 90 degrees or don't move
+
             liftMotor.setPower(0);
             liftMotorStatus = "Still";
         }
@@ -170,10 +170,10 @@ public class BasicOpMode_Iterative2 extends OpMode{
             markerDropper.setPosition(0);
         }
         if(gamepad1.a){
-            markerDropper.setPosition(90);
+            markerDropper.setPosition(0.5);
         }
         if(gamepad1.x){
-            markerDropper.setPosition(180);
+            markerDropper.setPosition(1);
         }
 
         // Show the elapsed game time and wheel power.

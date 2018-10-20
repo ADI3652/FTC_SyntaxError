@@ -59,7 +59,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor liftMotor = null;
-
+    private Servo markerDropper = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -73,6 +73,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
         leftDrive  = hardwareMap.get(DcMotor.class, "MotorLeft");
         rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
         liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
+        markerDropper = hardwareMap.get(Servo.class, "MarkerDropper")
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -160,6 +161,19 @@ public class BasicOpMode_Iterative2 extends OpMode{
             //move to 90 degrees or don't move
             liftMotor.setPower(0);
             liftMotorStatus = "Still";
+        }
+
+        //////////////////////////////////////////////////////////////
+
+        if(gamepad1.b){
+
+            markerDropper.setPosition(0);
+        }
+        if(gamepad1.a){
+            markerDropper.setPosition(90);
+        }
+        if(gamepad1.x){
+            markerDropper.setPosition(180);
         }
 
         // Show the elapsed game time and wheel power.

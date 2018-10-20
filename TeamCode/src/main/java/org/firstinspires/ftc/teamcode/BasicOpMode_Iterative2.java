@@ -58,7 +58,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private Servo servo1;
+    private DcMotor liftMotor = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -72,6 +72,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
         // step (using the FTC Robot Controller app on the phone).
         leftDrive  = hardwareMap.get(DcMotor.class, "MotorLeft");
         rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
+        liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -81,10 +82,10 @@ public class BasicOpMode_Iterative2 extends OpMode{
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
 ////////////////////
-        servo1 = hardwareMap.get(Servo.class, "servo0");
+        // servo1 = hardwareMap.get(Servo.class, "servo0");
 
         // Wait for the start button
-        telemetry.addData(">", "Press Start to scan Servo." );
+        telemetry.addData(">", "Press Start" );
         telemetry.update();
 
     }
@@ -137,32 +138,34 @@ public class BasicOpMode_Iterative2 extends OpMode{
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+
 
     //////////////////////////////////////////////////
 
-        String servoStatus;
+
+
+        String liftMotorStatus;
         //this gives the status of the servo motor to the phone
         if(gamepad1.dpad_down) {
             // move to 0 degrees or backward.
-            servo1.setPosition(1);
-            servoStatus = "Down";
+            liftMotor.setPower(-1);
+            liftMotorStatus = "Down";
         }
         else if (gamepad1.dpad_up) {
             // move to 180 degrees or forward.
-            servo1.setPosition(0);
-            servoStatus = "Up";
+            liftMotor.setPower(1);
+            liftMotorStatus = "Up";
         }
         else{
             //move to 90 degrees or don't move
-            servo1.setPosition(0.5);
-            servoStatus = "Still";
+            liftMotor.setPower(0);
+            liftMotorStatus = "Still";
         }
 
+        // Show the elapsed game time and wheel power.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Motors", "left (%.2f), right (%.2f), lift (%.2f)", leftPower, rightPower, liftMotorStatus);
 
-        telemetry.addData("Servo status", servoStatus);
 
         telemetry.addData("Status", "Running");
         telemetry.update();
@@ -170,7 +173,7 @@ public class BasicOpMode_Iterative2 extends OpMode{
 
     }
 
-    /*
+    /*f
      * Code to run ONCE after the driver hits STOP
      */
     @Override

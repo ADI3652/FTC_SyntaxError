@@ -122,7 +122,7 @@ public class BasicOpMode_Iterative4 extends OpMode{
 
         //////////////////////////////////////////////////////////////
         String markerStatus = "";
-        if(gamepad1.b){
+        if(gamepad1.x){
             servo0.setPosition(0);
             markerStatus = "0";
         }
@@ -130,7 +130,7 @@ public class BasicOpMode_Iterative4 extends OpMode{
             servo0.setPosition(0.5);
             markerStatus = "90";
         }
-        if(gamepad1.x){
+        if(gamepad1.b){
             servo0.setPosition(1);
             markerStatus = "180";
         }

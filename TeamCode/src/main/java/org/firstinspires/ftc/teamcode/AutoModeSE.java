@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="Basic Iterative OpMode #4", group="SyntaxError")
-public class BasicOpMode_Iterative4 extends OpMode{
+@Autonomous(name="AutoMode_SE", group="SyntaxError")
+public class AutoModeSE extends OpMode{
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
@@ -22,7 +22,7 @@ public class BasicOpMode_Iterative4 extends OpMode{
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized2");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -85,7 +85,7 @@ public class BasicOpMode_Iterative4 extends OpMode{
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
         */
-
+/*
         //Tank mode
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -96,12 +96,12 @@ public class BasicOpMode_Iterative4 extends OpMode{
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
 
-
+*/
 
         //////////////////////////////////////////////////
 
 
-
+/*
         String liftMotorStatus;
         //this gives the status of the motor to the phone
         if(gamepad1.dpad_down) {
@@ -119,10 +119,12 @@ public class BasicOpMode_Iterative4 extends OpMode{
             liftMotor.setPower(0);
             liftMotorStatus = "Still";
         }
-
+*/
         //////////////////////////////////////////////////////////////
+
+/*
         String markerStatus = "";
-        if(gamepad1.x){
+        if(gamepad1.b){
             servo0.setPosition(0);
             markerStatus = "0";
         }
@@ -130,7 +132,7 @@ public class BasicOpMode_Iterative4 extends OpMode{
             servo0.setPosition(0.5);
             markerStatus = "90";
         }
-        if(gamepad1.b){
+        if(gamepad1.x){
             servo0.setPosition(1);
             markerStatus = "180";
         }
@@ -143,7 +145,7 @@ public class BasicOpMode_Iterative4 extends OpMode{
 
         telemetry.addData("Status", "Running");
         telemetry.update();
-
+*/
 
     }
 

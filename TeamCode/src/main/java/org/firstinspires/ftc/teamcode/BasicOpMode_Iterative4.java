@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-
+@TeleOp(name="Basic Iterative OpMode #4", group="SyntaxError")
 public class BasicOpMode_Iterative4 extends OpMode{
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

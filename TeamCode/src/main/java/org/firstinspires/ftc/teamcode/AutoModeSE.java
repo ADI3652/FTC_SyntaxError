@@ -85,7 +85,7 @@ public class AutoModeSE extends OpMode{
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
         */
-
+/*
         //Tank mode
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -96,12 +96,12 @@ public class AutoModeSE extends OpMode{
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
 
-
+*/
 
         //////////////////////////////////////////////////
 
 
-
+/*
         String liftMotorStatus;
         //this gives the status of the motor to the phone
         if(gamepad1.dpad_down) {
@@ -119,8 +119,10 @@ public class AutoModeSE extends OpMode{
             liftMotor.setPower(0);
             liftMotorStatus = "Still";
         }
-
+*/
         //////////////////////////////////////////////////////////////
+
+/*
         String markerStatus = "";
         if(gamepad1.b){
             servo0.setPosition(0);
@@ -143,7 +145,7 @@ public class AutoModeSE extends OpMode{
 
         telemetry.addData("Status", "Running");
         telemetry.update();
-
+*/
 
     }
 

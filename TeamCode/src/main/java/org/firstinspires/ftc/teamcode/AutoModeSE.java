@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import static java.util.concurrent.TimeUnit.*;
 
 
@@ -21,6 +23,8 @@ public class AutoModeSE extends OpMode{
     private DcMotor rightDrive = null;
     private DcMotor liftMotor = null;
     private Servo servo0 = null;
+    private long runUntil = 0;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -75,11 +79,22 @@ public class AutoModeSE extends OpMode{
         int extend = 1;
         int retract = -1;
         int still = 0;
+        /*
         liftMotor.setPower(extend);
-        TimeUnit.MILLISECONDS(3000);
+        Thread.sleep(2000);
         liftMotor.setPower(still);
+        */
 
 
+        // Drive for 2 seconds
+        if (runUntil > System.currentTimeMillis())
+            return;
+
+        // Do other stuff
+        liftMotor.setPower(extend);
+        // If need to drive for 5 seconds
+        runUntil = System.currentTimeMillis() + 5000;
+        liftMotor.setPower(still);
 
 
         /*

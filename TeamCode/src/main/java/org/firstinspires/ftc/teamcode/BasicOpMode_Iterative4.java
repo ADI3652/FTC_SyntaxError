@@ -121,25 +121,12 @@ public class BasicOpMode_Iterative4 extends OpMode{
         }
 
         //////////////////////////////////////////////////////////////
-        String markerStatus = "";
-        if(gamepad1.x){
-            servo0.setPosition(0);
-            markerStatus = "0";
-        }
-        if(gamepad1.a){
-            servo0.setPosition(0.5);
-            markerStatus = "90";
-        }
-        if(gamepad1.b){
-            servo0.setPosition(1);
-            markerStatus = "180";
-        }
+
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         telemetry.addData("Lift", liftMotorStatus);
-        telemetry.addData("MarkerServo", markerStatus);
 
         telemetry.addData("Status", "Running");
         telemetry.update();

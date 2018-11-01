@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import static java.util.concurrent.TimeUnit.*;
 
 
 @Autonomous(name="AutoMode_SE", group="SyntaxError")
@@ -75,7 +76,7 @@ public class AutoModeSE extends OpMode{
         int retract = -1;
         int still = 0;
         liftMotor.setPower(extend);
-        Thread.sleep(1000);
+        TimeUnit.MILLISECONDS(3000);
         liftMotor.setPower(still);
 
 

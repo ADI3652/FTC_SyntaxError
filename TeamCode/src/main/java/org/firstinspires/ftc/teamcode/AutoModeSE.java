@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import java.util.concurrent.TimeUnit;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import static java.util.concurrent.TimeUnit.*;
+
 
 
 @Autonomous(name="AutoMode_SE", group="SyntaxError")

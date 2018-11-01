@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+java.util.concurrent.TimeUnit;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -7,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
 
 
 @Autonomous(name="AutoMode_SE", group="SyntaxError")
@@ -66,9 +69,30 @@ public class AutoModeSE extends OpMode{
         // Setup a variable for each drive wheel to save power level for telemetry
 
         /*
-        Auto code goes here
+        Robot detaches from  lander
          */
+        int extend = 1;
+        int retract = -1;
+        int still = 0;
+        liftMotor.setPower(extend);
+        Thread.sleep(1000);
+        liftMotor.setPower(still);
 
+
+
+
+        /*
+        Robot samples
+         */
+        /*
+        Robot orients itself
+         */
+        /*
+        Robot places marker
+         */
+        /*
+        Robot goes to crater
+         */
     }
 
     /*f

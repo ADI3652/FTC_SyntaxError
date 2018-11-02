@@ -106,12 +106,12 @@ public class BasicOpMode_Iterative4 extends OpMode{
         //this gives the status of the motor to the phone
         if(gamepad1.dpad_down) {
 
-            liftMotor.setPower(-1);
+            liftMotor.setPower(1);
             liftMotorStatus = "retracting";
         }
         else if (gamepad1.dpad_up) {
 
-            liftMotor.setPower(1);
+            liftMotor.setPower(-1);
             liftMotorStatus = "extending";
         }
         else{

@@ -93,7 +93,7 @@ public class AutoModeSE extends OpMode{
 
         // New code
         long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime <= 1000) {
+        while (System.currentTimeMillis() - startTime < 5) {
             liftMotor.setPower(-1);
         }
         liftMotor.setPower(0);

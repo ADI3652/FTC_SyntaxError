@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -22,7 +23,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Linear Autonomous", group="Linear Opmode")
+@Autonomous(name="Linear Autonomous", group="Linear Opmode")
 
 public class LinearAutonomous extends LinearOpMode {
 
@@ -31,6 +32,7 @@ public class LinearAutonomous extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor liftMotor = null;
+    private Servo servo0 = null;
     private long runUntil = 0;
     int extend = 1;
     int retract = -1;
@@ -38,45 +40,25 @@ public class LinearAutonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        leftDrive  = hardwareMap.get(DcMotor.class, "MotorLeft");
+        rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
+        liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
+        servo0 = hardwareMap.get(Servo.class, "servo0");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        
+        int retract = -1;
+        int still = 0;
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
 
-        /*
-        liftMotor.setPower(extend);
-        Thread.sleep(2000);
+        // New code
+        liftMotor.setPower(retract);
+        sleep(1000);
         liftMotor.setPower(still);
-        */
 
 
-            // Drive for 2 seconds
-            if (runUntil > System.currentTimeMillis()) {
 
-
-                // Do other stuff
-                liftMotor.setPower(extend);
-                // If need to drive for 5 seconds
-                runUntil = System.currentTimeMillis() + 2000;
-                liftMotor.setPower(still);
-                return;
-            }
         }
     }
-}
+

@@ -29,8 +29,8 @@ public class LinearAutonomous extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotor leftMotor = null;
+    private DcMotor rightMotor = null;
     private DcMotor liftMotor = null;
     private Servo servo0 = null;
     private long runUntil = 0;
@@ -41,21 +41,52 @@ public class LinearAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        leftDrive  = hardwareMap.get(DcMotor.class, "MotorLeft");
-        rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
+
+
+        leftMotor  = hardwareMap.get(DcMotor.class, "MotorLeft");
+        rightMotor = hardwareMap.get(DcMotor.class, "MotorRight");
         liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
         servo0 = hardwareMap.get(Servo.class, "servo0");
 
-        
-        int retract = -1;
-        int still = 0;
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        double retract = -0.2;
+        double still = 0;
 
 
 
-        // New code
+        //detaching from lander
+
         liftMotor.setPower(retract);
-        sleep(1000);
+        sleep(2000);
+
         liftMotor.setPower(still);
+        sleep(1500);
+/*
+        rightMotor.setPower(0.4);
+        sleep(600);
+
+        rightMotor.setPower(0);
+        leftMotor.setPower(0.4);
+        sleep(600);
+*/
+
+
+
+        //drive forward
+        leftMotor.setPower(1);
+        rightMotor.setPower(1);
+        sleep(3000);
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+        /*
+        if(button is one){
+            leftMotor.setPower(0);
+            rightMotor.setPower(0);
+        }
+        */
+        //if touch sensor = high, stop, place marker.
 
 
 

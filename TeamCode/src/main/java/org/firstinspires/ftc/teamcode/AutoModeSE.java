@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -89,6 +91,15 @@ public class AutoModeSE extends OpMode{
         */
 
 
+        // New code
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < 5000) {
+            liftMotor.setPower(1);
+        }
+        liftMotor.setPower(0);
+
+        /*
+
         // Drive for 2 seconds
         if (runUntil > System.currentTimeMillis())
             return;
@@ -99,6 +110,7 @@ public class AutoModeSE extends OpMode{
         runUntil = System.currentTimeMillis() + 5000;
         liftMotor.setPower(still);
 
+        */
 
         /*
         Robot samples

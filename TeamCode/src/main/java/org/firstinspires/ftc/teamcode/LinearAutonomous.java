@@ -33,6 +33,7 @@ public class LinearAutonomous extends LinearOpMode {
     private DcMotor rightMotor = null;
     private DcMotor liftMotor = null;
     private Servo servo0 = null;
+    private Servo servo5 = null;
     private long runUntil = 0;
     int extend = 1;
     int retract = -1;
@@ -41,12 +42,19 @@ public class LinearAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Ready to run");    //
+        telemetry.update();
 
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
 
         leftMotor  = hardwareMap.get(DcMotor.class, "MotorLeft");
         rightMotor = hardwareMap.get(DcMotor.class, "MotorRight");
         liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
         servo0 = hardwareMap.get(Servo.class, "servo0");
+        servo5 = hardwareMap.get(Servo.class, "servo5");
 
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -54,12 +62,10 @@ public class LinearAutonomous extends LinearOpMode {
         double retract = -0.2;
         double still = 0;
 
-
-
         //detaching from lander
 
         liftMotor.setPower(retract);
-        sleep(2000);
+        sleep(4500);
 
         liftMotor.setPower(still);
         sleep(1500);
@@ -73,6 +79,12 @@ public class LinearAutonomous extends LinearOpMode {
 */
 
 
+
+        // Unlatch from the lander
+        rightMotor.setPower(0.5);
+        sleep(500);
+        leftMotor.setPower(0.5);
+        sleep(500);
 
         //drive forward
         leftMotor.setPower(1);

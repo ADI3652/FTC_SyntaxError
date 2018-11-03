@@ -17,6 +17,11 @@ public class BasicOpMode_Iterative4 extends OpMode{
     private DcMotor rightDrive = null;
     private DcMotor liftMotor = null;
     private Servo servo0 = null;
+    private Servo servo5 = null;
+
+    double servo5_down = 0.1;
+    double servo5_up = 1;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -31,11 +36,15 @@ public class BasicOpMode_Iterative4 extends OpMode{
         rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
         liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
         servo0 = hardwareMap.get(Servo.class, "servo0");
+        servo5 = hardwareMap.get(Servo.class, "servo5");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        // Servo 5 stuff
+        servo5.setPosition(servo5_down);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -95,6 +104,18 @@ public class BasicOpMode_Iterative4 extends OpMode{
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
+
+        // Servo 5 logic
+        // Lift the arm
+        if (gamepad1.y) {
+            servo5.setPosition(servo5_up);
+        }
+        // Close / tuck the arm
+        else if (gamepad1.a) {
+            servo5.setPosition(servo5_down);
+        }
+
+
 
 
 

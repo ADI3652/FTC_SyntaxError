@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -25,7 +23,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @Autonomous(name="Linear Autonomous", group="Linear Opmode")
 
-public class LinearAutonomous extends LinearOpMode {
+public class LinearAutonomous2 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -72,18 +70,17 @@ public class LinearAutonomous extends LinearOpMode {
         leftMotor.setPower(-0.5);
         rightMotor.setPower(-0.5);
         sleep(250);
+
         // Do a on the spot left turn
         leftMotor.setPower(-0.5);
         rightMotor.setPower(0.5);
         sleep(10000);
-        // Move forward for a tiny little distance
-        leftMotor.setPower(-0.5);
-        rightMotor.setPower(-0.5);
-        sleep(250);
-        // Do a on the spot left turn
-        leftMotor.setPower(-0.5);
-        rightMotor.setPower(0.5);
-        sleep(10000);
+
+        // Move backward all the way into the crater / depo
+        leftMotor.setPower(1);
+        rightMotor.setPower(1);
+        sleep(2000);
+
 
         // Es
 

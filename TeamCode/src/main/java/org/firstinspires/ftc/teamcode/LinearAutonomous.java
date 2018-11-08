@@ -64,18 +64,40 @@ public class LinearAutonomous extends LinearOpMode {
 
         // Lower to the ground
         liftMotor.setPower(-1);
-        sleep(3850);
+        sleep(3200);
         liftMotor.setPower(0);
 
         // Escape the latch
         // Move forward for a tiny little distance
-        leftMotor.setPower(-0.5);
-        rightMotor.setPower(-0.5);
+        leftMotor.setPower(-0.3);
+        rightMotor.setPower(-0.3);
         sleep(250);
         // Do a on the spot left turn
-        leftMotor.setPower(-0.5);
-        rightMotor.setPower(0.5);
-        sleep(10000);
+        leftMotor.setPower(-0.3);
+        rightMotor.setPower(0.3);
+        sleep(350);
+
+        // Align properly
+        // Move backward for a tiny little distance
+        leftMotor.setPower(0.3);
+        rightMotor.setPower(0.3);
+        sleep(250);
+        // Do a on the spot right turn
+        leftMotor.setPower(0.3);
+        rightMotor.setPower(-0.3);
+        sleep(350);
+
+        // Move closer to the minerals
+        // Move backward for a little distance
+        leftMotor.setPower(0.3);
+        rightMotor.setPower(0.3);
+        sleep(750);
+        // Start scanning the minerals
+        // Knock off the gold cube without knocking off the white spheres
+
+
+        /*
+        Old code for escaping the latch
         // Move forward for a tiny little distance
         leftMotor.setPower(-0.5);
         rightMotor.setPower(-0.5);
@@ -84,6 +106,7 @@ public class LinearAutonomous extends LinearOpMode {
         leftMotor.setPower(-0.5);
         rightMotor.setPower(0.5);
         sleep(10000);
+        */
 
         // Es
 

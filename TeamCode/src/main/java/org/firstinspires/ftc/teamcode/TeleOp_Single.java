@@ -11,18 +11,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Tele Op - Single Player", group="SyntaxError")
 public class TeleOp_Single extends OpMode{
+
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor liftMotor = null;
-    private Servo servo0 = null;
-    private Servo servo5 = null;
+    HardwareBot robot = new HardwareBot();
 
     private final double DRIVE_MOTOR_MULTIPLIER = 0.90; // sets the overall motor speed for the drive motors
     private final double SLOW_TURN              = 0.35; // sets the slow turn speed used through gamepad 1 dpad
-    private final double servo5_down = 0.1;
-    private final double servo5_up = 1;
 
 
     /*
@@ -30,34 +24,14 @@ public class TeleOp_Single extends OpMode{
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        /* Initialize the hardware variables.
+         * The init() method of the hardware class does all the work here
+         */
+        robot.init(hardwareMap);
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "MotorLeft");
-        rightDrive = hardwareMap.get(DcMotor.class, "MotorRight");
-        liftMotor = hardwareMap.get(DcMotor.class, "MotorLift");
-        servo0 = hardwareMap.get(Servo.class, "servo0");
-        servo5 = hardwareMap.get(Servo.class, "servo5");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        // Servo 5 stuff
-        servo5.setPosition(servo5_down);
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-////////////////////
-
-
-        // Wait for the start button
-        telemetry.addData(">", "Press Start" );
+        // Send telemetry to signify robot initialized and ready;
+        telemetry.addData("Robot", "Ready to start");
         telemetry.update();
-
     }
 
     /*
@@ -72,7 +46,6 @@ public class TeleOp_Single extends OpMode{
      */
     @Override
     public void start() {
-        runtime.reset();
     }
 
     /*
@@ -106,38 +79,38 @@ public class TeleOp_Single extends OpMode{
             left  = left  / 2;
         }
         if(!gamepad1.dpad_right && !gamepad1.dpad_left) {
-            leftDrive.setPower(left);
-            rightDrive.setPower(right);
+            robot.leftDrive.setPower(left);
+            robot.rightDrive.setPower(right);
         }
         else {
             // Make the robot turn slowly if dpad buttons are pressed on gamepad 1
             if(gamepad1.dpad_left) {
-                rightDrive.setPower(SLOW_TURN);
-                leftDrive.setPower(-SLOW_TURN);
+                robot.rightDrive.setPower(SLOW_TURN);
+                robot.leftDrive.setPower(-SLOW_TURN);
             }
             else if(gamepad1.dpad_right) {
-                rightDrive.setPower(-SLOW_TURN);
-                leftDrive.setPower(SLOW_TURN);
+                robot.rightDrive.setPower(-SLOW_TURN);
+                robot.leftDrive.setPower(SLOW_TURN);
             }
         }
 
         // Controlling the linear lift using buttons
         String liftMotorStatus;
         if (gamepad1.dpad_up) {
-            liftMotor.setPower(1);
+            robot.liftMotor.setPower(1);
             liftMotorStatus = "going up";
         }
         else if (gamepad1.dpad_down) {
-            liftMotor.setPower(-1);
+            robot.liftMotor.setPower(-1);
             liftMotorStatus = "going down";
         }
         else {
-            liftMotor.setPower(0);
+            robot.liftMotor.setPower(0);
             liftMotorStatus = "still";
         }
 
         // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "Run Time: " + robot.period.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", left, right);
         telemetry.addData("Lift", liftMotorStatus);
 

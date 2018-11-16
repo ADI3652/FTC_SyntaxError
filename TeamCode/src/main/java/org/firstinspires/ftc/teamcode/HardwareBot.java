@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,6 +43,8 @@ public class HardwareBot
     public Servo mineralServo = null;
     // Color sensor
     public ColorSensor colourSensor;
+    // Distance sensor
+    public DistanceSensor distanceSensor;
     // hsvValues is an array that will hold the hue, saturation, and value information.
     public float hsvValues[] = {0F,0F,0F};
     // values is a reference to the hsvValues array.
@@ -55,6 +60,12 @@ public class HardwareBot
     public static final double SAMPLING_SERVO_TUCK = 1;
     public static final double MINERAL_SERVO_COLLECT = 0;
     public static final double MINERAL_SERVO_INSERT = 1;
+
+    public static final double COUNTS_PER_MOTOR_REV    = 1440;
+    public static final double DRIVE_GEAR_REDUCTION    = 1;
+    public static final double WHEEL_DIAMETER_CENTIMETERS   = 5;
+    public static final double COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
 
     /* local OpMode members. */
     HardwareMap hardwareMap = null;
@@ -152,6 +163,138 @@ public class HardwareBot
         if(useColour) {
             colourSensor = hardwareMap.colorSensor.get("sensor_color");
         }
+
     }
+
+    // Custom methods
+    // This method allows the robot to drive forward or backward for a given distance at a given speed
+    public void encoderDrive(double speed, double distanceCM, int timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        /*
+        If the robot needs to move forwards the distance input will be a positive number,
+        therefore the new position of the motors will be greater than the current position.
+        Alternatively, if the robot needs to move backwards the distance input will be a negative
+        number, therefore the new position of the motors will be lower than the current position.
+         */
+        newLeftTarget = leftDrive.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM);
+        newRightTarget = rightDrive.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM);
+
+        leftDrive.setTargetPosition(newLeftTarget);
+        rightDrive.setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        The absolute value of speed is set to the motors because
+        the motors will automatically rotate backwards if the target position is less than
+        the current position
+         */
+        leftDrive.setPower(Math.abs(speed));
+        rightDrive.setPower(Math.abs(speed));
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method allows the robot to drive to a given position
+    public void encoderDriveToRightPosition(double speed, int rightMotorPosition, int timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        /*
+        If the robot needs to move forwards the distance input will be a positive number,
+        therefore the new position of the motors will be greater than the current position.
+        Alternatively, if the robot needs to move backwards the distance input will be a negative
+        number, therefore the new position of the motors will be lower than the current position.
+         */
+        newLeftTarget = leftDrive.getCurrentPosition() + (rightMotorPosition - rightDrive.getCurrentPosition());
+        newRightTarget = rightMotorPosition;
+
+        leftDrive.setTargetPosition(newLeftTarget);
+        rightDrive.setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        The absolute value of speed is set to the motors because
+        the motors will automatically rotate backwards if the target position is less than
+        the current position
+         */
+        leftDrive.setPower(Math.abs(speed));
+        rightDrive.setPower(Math.abs(speed));
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 100 converts it to seconds
+
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method allows the robot to turn to its left on the spot for a given amount of degrees
+    public void imuTurnLeft(double speed, double rotationD, int timeoutS) {
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        double targetAngle = imu.getAngularOrientation().firstAngle + rotationD;
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) &&
+                (Math.abs(targetAngle - imu.getAngularOrientation().firstAngle) > 2.5)) {
+            leftDrive.setPower(-Math.abs(speed));
+            rightDrive.setPower(Math.abs(speed));
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method allows the robot to turn to its right on the spot for a given amount of degrees
+    public void imuTurnRight(double speed, double rotationD, int timeoutS) {
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        /*
+        The intended rotation value is subtracted from the initial angle because as the robot
+        turns right the gyroscope reading decreases
+         */
+        double targetAngle = imu.getAngularOrientation().firstAngle - rotationD;
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) &&
+                (Math.abs(targetAngle - imu.getAngularOrientation().firstAngle) > 2.5)) {
+            leftDrive.setPower(Math.abs(speed));
+            rightDrive.setPower(-Math.abs(speed));
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
  }
 

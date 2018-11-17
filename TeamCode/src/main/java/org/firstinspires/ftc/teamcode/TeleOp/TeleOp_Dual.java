@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,9 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.HardwareBot;
 
-@TeleOp(name="Tele Op - Single Player", group="SyntaxError")
-public class TeleOp_Single extends OpMode{
+
+@TeleOp(name="Tele Op - Two Player", group="SyntaxError")
+public class TeleOp_Dual extends OpMode{
 
     // Declare OpMode members.
     HardwareBot robot = new HardwareBot();

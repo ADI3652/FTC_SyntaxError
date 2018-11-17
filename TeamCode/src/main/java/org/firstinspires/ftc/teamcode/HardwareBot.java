@@ -29,7 +29,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Servo channel:  Servo to drop the team market: "markerServo"
  * Servo channel:  Servo the push the gold cube:  "samplingServo"
  * Servo channel:  Servo to insert the minerals:  "mineralServo"
+ * Sensor channel: Inertial measurement unit:     "imu" - 12C port 0
+ * Sensor channel: Colour sensor for sampling:    "colourSensor" - 12C port 1
  */
+
 public class HardwareBot
 {
     /* Public OpMode members. */
@@ -161,7 +164,7 @@ public class HardwareBot
             imu.initialize(parameters);
         }
         if(useColour) {
-            colourSensor = hardwareMap.colorSensor.get("sensor_color");
+            colourSensor = hardwareMap.colorSensor.get("colourSensor");
         }
 
     }
@@ -257,12 +260,18 @@ public class HardwareBot
 
         double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
         double currentTime = 0;
+        /*
+        Keep on turning left on the spot until the difference between the
+        desired angle and current angle is less than 2.5 degrees
+         */
+        // This means that the robot's turning has a precision of 1.5 degrees
         while ((currentTime - startTime < timeoutS) &&
-                (Math.abs(targetAngle - imu.getAngularOrientation().firstAngle) > 2.5)) {
+                (Math.abs(targetAngle - imu.getAngularOrientation().firstAngle) > 1.5)) {
             leftDrive.setPower(-Math.abs(speed));
             rightDrive.setPower(Math.abs(speed));
             currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
         }
+        // When the robot has turned to the desired orientation brake both motors to prevent coasting
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -284,7 +293,7 @@ public class HardwareBot
         double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
         double currentTime = 0;
         while ((currentTime - startTime < timeoutS) &&
-                (Math.abs(targetAngle - imu.getAngularOrientation().firstAngle) > 2.5)) {
+                (Math.abs(targetAngle - imu.getAngularOrientation().firstAngle) > 1.5)) {
             leftDrive.setPower(Math.abs(speed));
             rightDrive.setPower(-Math.abs(speed));
             currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds

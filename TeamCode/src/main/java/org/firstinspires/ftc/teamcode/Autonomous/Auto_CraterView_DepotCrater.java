@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 // Linear autonomous program imports
 
 import android.app.Activity;
@@ -13,12 +13,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.teamcode.HardwareBot;
 
 import java.util.Locale;
-
-// Allows for conversion to HSV (hue, saturation, value) from RGB (red, green blue)
-// Required imports for program specific methods
-// Used with Vuforia to track the vuMarks
 
 @Autonomous(name = "Auto - Crater view - Depot Crater", group = "SyntaxError")
 public class Auto_CraterView_DepotCrater extends LinearOpMode {
@@ -30,7 +27,6 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
     @Override
     public void runOpMode() {
         /* When initialise button is pressed: */
-        // Initialise relevant devices with IMU, color, vuforia and the jewel arm enabled
         robot.init(hardwareMap, true, true);
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
@@ -47,7 +43,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
          */
         // Lower to the ground
         robot.liftMotor.setPower(-1);
-        sleep(3200);
+        sleep(3000);
         robot.liftMotor.setPower(0);
 
         // Escape the latch

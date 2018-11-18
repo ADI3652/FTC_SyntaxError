@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Testing;
 // Linear autonomous program imports
 
 import android.app.Activity;
@@ -41,7 +41,7 @@ public class EncoderDriveSystemTesting extends LinearOpMode {
         // Move forward 50 cm
         robot.encoderDrive(0.5, 50, 10);
         // Move backward 50 cm
-        robot.encoderDrive(0.5, 50, 10);
+        robot.encoderDrive(0.5, -50, 10);
         //
     }
 }

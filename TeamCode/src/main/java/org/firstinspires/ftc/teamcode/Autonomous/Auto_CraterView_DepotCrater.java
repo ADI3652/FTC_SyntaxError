@@ -169,6 +169,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
          */
         telemetry.addData("Task", "Sampling");
         telemetry.update();
+        int leftMotorInitialPosition = robot.leftDrive.getCurrentPosition();
         int rightMotorInitialPosition = robot.rightDrive.getCurrentPosition();
         boolean stop = false;
         while (stop == false) {
@@ -181,12 +182,15 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
             telemetry.addData("Green", robot.colourSensor.green());
             telemetry.addData("Blue ", robot.colourSensor.blue());
             telemetry.addData("Hue", hsvValues[0]);
+            /*
             relativeLayout.post(new Runnable() {
                 public void run() {
                     relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
                 }
             });
-            if (hsvValues[0] >= 45 && hsvValues[0] <= 75) {
+            */
+            // If the hue value is between 45 and 75 then stop the loop
+            if (hsvValues[0] >= 45 && hsvValues[0] <= 75) { // Condition for detecting gold cube
                 stop = true;
             }
             if(!opModeIsActive()) break;
@@ -199,7 +203,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         robot.encoderDrive(0.5, -5, 4);
         // Turn right for 90 degrees to return to the orginal angle before knocking oof the gold cube
         robot.imuTurnRight(0.3, 90, 5);
-        robot.encoderDriveToRightPosition(0.4, rightMotorInitialPosition, 6);
+        robot.encoderDriveToPosition(0.4, leftMotorInitialPosition, rightMotorInitialPosition, 6);
 
         /*
         Stage 4 - Team marker in Depot

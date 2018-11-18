@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
 import android.os.SystemClock;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -62,7 +63,7 @@ public class HardwareBot
     public static final double MINERAL_SERVO_INSERT = 1;
 
     public static final double COUNTS_PER_MOTOR_REV    = 1440;
-    public static final double DRIVE_GEAR_REDUCTION    = 1;
+    public static final double DRIVE_GEAR_REDUCTION    = 1.4;
     public static final double WHEEL_DIAMETER_CENTIMETERS   = 5;
     public static final double COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
@@ -178,8 +179,8 @@ public class HardwareBot
         Alternatively, if the robot needs to move backwards the distance input will be a negative
         number, therefore the new position of the motors will be lower than the current position.
          */
-        newLeftTarget = leftDrive.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM);
-        newRightTarget = rightDrive.getCurrentPosition() + (int) (distanceCM * COUNTS_PER_CM);
+        newLeftTarget = leftDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
+        newRightTarget = rightDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
 
         leftDrive.setTargetPosition(newLeftTarget);
         rightDrive.setTargetPosition(newRightTarget);
@@ -208,7 +209,7 @@ public class HardwareBot
     }
 
     // This method allows the robot to drive to a given position
-    public void encoderDriveToRightPosition(double speed, int rightMotorPosition, int timeoutS) {
+    public void encoderDriveToPosition(double speed, int leftMotorPosition, int rightMotorPosition, int timeoutS) {
         int newLeftTarget;
         int newRightTarget;
 
@@ -218,7 +219,8 @@ public class HardwareBot
         Alternatively, if the robot needs to move backwards the distance input will be a negative
         number, therefore the new position of the motors will be lower than the current position.
          */
-        newLeftTarget = leftDrive.getCurrentPosition() + (rightMotorPosition - rightDrive.getCurrentPosition());
+        // newLeftTarget = leftDrive.getCurrentPosition() + (rightMotorPosition - rightDrive.getCurrentPosition());
+        newLeftTarget = leftMotorPosition;
         newRightTarget = rightMotorPosition;
 
         leftDrive.setTargetPosition(newLeftTarget);
@@ -300,6 +302,38 @@ public class HardwareBot
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method return if a white colour (white mineral) has been detected
+    public boolean isWhiteMineral() {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F,0F,0F};
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+        // Converts the raw RGB values to HSV values, which are easier to use to detect ball colours
+        Color.RGBToHSV((colourSensor.red() * 255) / 800, (colourSensor.green() * 255) / 800, (colourSensor.blue() * 255) / 800, hsvValues);
+        if (hsvValues[1] < 0.25 && hsvValues[2] > 0.9) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // This method return if a gold colour (gold cube) has been detected
+    public boolean isGoldMineral() {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F,0F,0F};
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+        // Converts the raw RGB values to HSV values, which are easier to use to detect ball colours
+        Color.RGBToHSV((colourSensor.red() * 255) / 800, (colourSensor.green() * 255) / 800, (colourSensor.blue() * 255) / 800, hsvValues);
+        if ((colourSensor.red() > colourSensor.blue()) && (colourSensor.green() > colourSensor.blue())) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
  }

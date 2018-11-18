@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.HardwareBot;
 
 import java.util.Locale;
@@ -41,12 +40,14 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         /*
         Stage 1 - Latching off
          */
+        telemetry.addData("Task", "Stage 1 - Latching off");
+        telemetry.update();
         // Lower to the ground
-        robot.liftMotor.setPower(-1);
-        sleep(3000);
+        robot.liftMotor.setPower(0.5);
+        sleep(2000);
         robot.liftMotor.setPower(0);
 
-        // Escape the latch
+        // Escape the latch`
         // Move forward for a tiny little distance
         robot.encoderDrive(0.2, 2, 2);
         // Do a on the spot left turn
@@ -55,6 +56,8 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         /*
         Stage 2 - Getting to the minerals
          */
+        telemetry.addData("Task", "Stage 2 - Getting to the minerals");
+        telemetry.update();
         // Move backward so that the robot can get away from the lander
         robot.encoderDrive(0.5, 5, 2);
         // Turn right so that the robot is parallel to the lander
@@ -70,6 +73,9 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         /*
         Stage 3 - Sampling
          */
+        /*
+        telemetry.addData("Task", "Sampling");
+        telemetry.update();
         // Loop the colour sensor readings to display to telementry and provide time for readings to settle
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
@@ -120,7 +126,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
             // Move forward so that the colour sensor can only see the second mineral at the moment
             robot.encoderDrive(0.2, 15, 3);
             // Check if the second mineral is a gold cube using the hue value from the colour sensor
-            if (hsvValues[0] >= 25 && hsvValues[0] <= 75) {
+            if (hsvValues[0] >= 45 && hsvValues[0] <= 75) {
                 robot.samplingServo.setPosition(robot.SAMPLING_SERVO_PUSH);
                 robot.samplingServo.setPosition(robot.SAMPLING_SERVO_TUCK);
                 distanceOffset = 0;
@@ -148,7 +154,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
                 // Move forward so that the colour sensor can only see the third mineral at the moment
                 robot.encoderDrive(0.2, 15, 3);
                 // Check if the third mineral is a gold cube using the hue value from the colour sensor
-                if (hsvValues[0] >= 25 && hsvValues[0] <= 75) {
+                if (hsvValues[0] >= 45 && hsvValues[0] <= 75) {
                     robot.samplingServo.setPosition(robot.SAMPLING_SERVO_PUSH);
                     robot.samplingServo.setPosition(robot.SAMPLING_SERVO_TUCK);
                     distanceOffset = 15;
@@ -157,9 +163,12 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         }
         // Move backwards so that the robot is clear of the minerals
         robot.encoderDrive(0.5, (50 + distanceOffset), 5);
+        */
         /*
         Stage 3 - Sampling (alternative)
          */
+        telemetry.addData("Task", "Sampling");
+        telemetry.update();
         int rightMotorInitialPosition = robot.rightDrive.getCurrentPosition();
         boolean stop = false;
         while (stop == false) {
@@ -188,12 +197,15 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         robot.encoderDrive(0.5, 5, 4);
         // Move backward a little bit
         robot.encoderDrive(0.5, -5, 4);
+        // Turn right for 90 degrees to return to the orginal angle before knocking oof the gold cube
         robot.imuTurnRight(0.3, 90, 5);
         robot.encoderDriveToRightPosition(0.4, rightMotorInitialPosition, 6);
 
         /*
         Stage 4 - Team marker in Depot
          */
+        telemetry.addData("Task", "Team marker in Depot");
+        telemetry.update();
         // Turn right for 135 degrees in a zero point turn so that the robot is facing the depot
         robot.imuTurnRight(0.3, 135, 5);
         // Drive forwards so that the robot is in the depot
@@ -204,6 +216,8 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         /*
         Stage 5 - Park in Crater
          */
+        telemetry.addData("Task", "Park in Crater");
+        telemetry.update();
         // Drive backwards so that the robot goes into the crater
         robot.encoderDrive(1, 300, 10);
 

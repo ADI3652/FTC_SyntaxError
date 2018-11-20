@@ -169,6 +169,34 @@ public class HardwareBot
 
     // Custom methods
     // This method allows the robot to drive forward or backward for a given distance at a given speed
+    // This only use the left motor's encoder
+    public void encoderDriveLeftEncoder(double speed, double distanceCM, int timeoutS) {
+        int newLeftTarget;
+
+        newLeftTarget = leftDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
+
+        leftDrive.setTargetPosition(newLeftTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftDrive.setPower(Math.abs(speed));
+        if (distanceCM > 0) {
+            rightDrive.setPower(speed);
+        }
+        else if (distanceCM < 0) {
+            rightDrive.setPower(-speed);
+        }
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    // This method allows the robot to drive forward or backward for a given distance at a given speed
     public void encoderDrive(double speed, double distanceCM, int timeoutS) {
         int newLeftTarget;
         int newRightTarget;

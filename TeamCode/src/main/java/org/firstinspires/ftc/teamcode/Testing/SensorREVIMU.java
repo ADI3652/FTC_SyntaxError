@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Testing;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -43,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.teamcode.HardwareBot;
 
 import java.util.Locale;
 
@@ -54,10 +56,10 @@ import java.util.Locale;
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@TeleOp(name = "Sensor: BNO055 IMU", group = "Sensor")
+@Autonomous(name = "Sensor: BNO055 IMU", group = "Sensor")
 // @Disabled                            // Comment this out to add to the opmode list
-public class SensorREVIMU extends LinearOpMode
-    {
+public class SensorREVIMU extends LinearOpMode {
+    HardwareBot robot = new HardwareBot();
     //----------------------------------------------------------------------------------------------
     // State
     //----------------------------------------------------------------------------------------------
@@ -74,6 +76,7 @@ public class SensorREVIMU extends LinearOpMode
     //----------------------------------------------------------------------------------------------
 
     @Override public void runOpMode() {
+        robot.init(hardwareMap, true, true);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -97,6 +100,10 @@ public class SensorREVIMU extends LinearOpMode
 
         // Wait until we're told to go
         waitForStart();
+        // Turn left 90 degrees
+        robot.imuTurnLeft(0.3, 90, 5);
+        // Turn right 90 degrees
+        robot.imuTurnRight(0.3, 90, 5);
 
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);

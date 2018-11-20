@@ -39,9 +39,11 @@ public class EncoderDriveSystemTesting extends LinearOpMode {
 
         /* When start button is pressed; run main code */
         // Move forward 50 cm
-        robot.encoderDrive(0.5, 50, 10);
+        // robot.encoderDrive(0.5, 50, 10);
+        robot.encoderDriveLeftEncoder(0.5, 50, 10);
         // Move backward 50 cm
-        robot.encoderDrive(0.5, -50, 10);
+        // robot.encoderDrive(0.5, -50, 10);
+        robot.encoderDriveLeftEncoder(0.5, -50, 10);
         //
     }
 }

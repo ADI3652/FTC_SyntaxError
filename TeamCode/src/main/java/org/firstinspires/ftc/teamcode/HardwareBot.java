@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 
 /**
  * This is NOT an opmode.
@@ -25,7 +24,6 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
  * Motor channel:  Right drive motor:             "rightDrive"
  * Motor channel:  Linear lift motor:             "liftMotor"
  * Servo channel:  Servo to drop the team market: "markerServo"
- * Servo channel:  Servo the push the gold cube:  "samplingServo"
  * Servo channel:  Servo to insert the minerals:  "mineralServo"
  * Sensor channel: Inertial measurement unit:     "imu" - 12C port 0
  * Sensor channel: Colour sensor for sampling:    "colourSensor" - 12C port 1
@@ -40,7 +38,6 @@ public class HardwareBot
     public DcMotor liftMotor = null;
     // Servos
     public Servo markerServo = null;
-    public Servo samplingServo = null;
     public Servo mineralServo = null;
     // Color sensor
     public ColorSensor colourSensor;
@@ -55,18 +52,24 @@ public class HardwareBot
     public BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     // Constants
-    public static final double MARKER_SERVO_HOLD = 0;
-    public static final double MARKER_SERVO_DROP = 1;
-    public static final double SAMPLING_SERVO_PUSH = 0;
-    public static final double SAMPLING_SERVO_TUCK = 1;
-    public static final double MINERAL_SERVO_COLLECT = 0;
-    public static final double MINERAL_SERVO_INSERT = 1;
+    public static final double MARKER_SERVO_CLOSE = 0;
+    public static final double MARKER_SERVO_OPEN = 1;
+    public static final double MINERAL_SERVO_DOWN= 0;
+    public static final double MINERAL_SERVO_UP = 1;
 
+    // This number is supplied by the manufacturer of the motor
     public static final double COUNTS_PER_MOTOR_REV    = 1440;
-    public static final double DRIVE_GEAR_REDUCTION    = 1.4;
-    public static final double WHEEL_DIAMETER_CENTIMETERS   = 5;
+    // This value depends on the gears between the motor and the wheels/tracks
+    // Reducing this value makes the robot go less distance for a given distance input
+    public static final double DRIVE_GEAR_REDUCTION    = 0.72;
+    // Reducing this value makes the robot go more distance for a given distance input
+    public static final double WHEEL_DIAMETER_CM   = 5;
+    // This value represents how many counts the robot need to tick in order to move thr robot a CM
     public static final double COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
+            (WHEEL_DIAMETER_CM * 3.14159);
+
+    // The distance between the the left track and right track
+    public static final double LENGTH_BETWEEN_WHEELS_CM = 40;
 
     /* local OpMode members. */
     HardwareMap hardwareMap = null;
@@ -108,11 +111,9 @@ public class HardwareBot
 
         // Define and initialize ALL installed servos
         markerServo = hardwareMap.get(Servo.class, "markerServo");
-        samplingServo = hardwareMap.get(Servo.class, "samplingServo");
         mineralServo = hardwareMap.get(Servo.class, "mineralServo");
-        markerServo.setPosition(MARKER_SERVO_HOLD);
-        samplingServo.setPosition(SAMPLING_SERVO_TUCK);
-        mineralServo.setPosition(MINERAL_SERVO_COLLECT);
+        markerServo.setPosition(MARKER_SERVO_CLOSE);
+        mineralServo.setPosition(MINERAL_SERVO_DOWN);
     }
 
         /**
@@ -146,11 +147,9 @@ public class HardwareBot
 
         // Define and initialize ALL installed servos
         markerServo = hardwareMap.get(Servo.class, "markerServo");
-        samplingServo = hardwareMap.get(Servo.class, "samplingServo");
         mineralServo = hardwareMap.get(Servo.class, "mineralServo");
-        markerServo.setPosition(MARKER_SERVO_HOLD);
-        samplingServo.setPosition(SAMPLING_SERVO_TUCK);
-        mineralServo.setPosition(MINERAL_SERVO_COLLECT);
+        markerServo.setPosition(MARKER_SERVO_CLOSE);
+        mineralServo.setPosition(MINERAL_SERVO_DOWN);
 
         if(useIMU) {
             parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -180,10 +179,10 @@ public class HardwareBot
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftDrive.setPower(Math.abs(speed));
-        if (distanceCM > 0) {
+        if (distanceCM < 0) {
             rightDrive.setPower(speed);
         }
-        else if (distanceCM < 0) {
+        else if (distanceCM > 0) {
             rightDrive.setPower(-speed);
         }
 
@@ -209,6 +208,46 @@ public class HardwareBot
          */
         newLeftTarget = leftDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
         newRightTarget = rightDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
+
+        leftDrive.setTargetPosition(newLeftTarget);
+        rightDrive.setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        The absolute value of speed is set to the motors because
+        the motors will automatically rotate backwards if the target position is less than
+        the current position
+         */
+        leftDrive.setPower(Math.abs(speed));
+        rightDrive.setPower(Math.abs(speed));
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method allows each of its tracks to move forward or backward for a given distance at a given speed
+    public void encoderEachDrive(double speed, double distanceLeftCM, double distanceRightCM, int timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        /*
+        If the robot needs to move forwards the distance input will be a positive number,
+        therefore the new position of the motors will be greater than the current position.
+        Alternatively, if the robot needs to move backwards the distance input will be a negative
+        number, therefore the new position of the motors will be lower than the current position.
+         */
+        newLeftTarget = leftDrive.getCurrentPosition() - (int) (distanceLeftCM * COUNTS_PER_CM);
+        newRightTarget = rightDrive.getCurrentPosition() - (int) (distanceRightCM * COUNTS_PER_CM);
 
         leftDrive.setTargetPosition(newLeftTarget);
         rightDrive.setTargetPosition(newRightTarget);
@@ -270,6 +309,92 @@ public class HardwareBot
         while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
             currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 100 converts it to seconds
 
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method allows the robot to turn left on the spot for a specified angle without using the IMU
+    public void encoderTurnLeft(double speed, double rotationD, int timeoutS) {
+        final double ROBOT_CIRCUMFERENCE = 3.14159 * LENGTH_BETWEEN_WHEELS_CM;
+        double distanceForEachMotor = ((rotationD / 360) * ROBOT_CIRCUMFERENCE) / 2;
+
+        int newLeftTarget;
+        int newRightTarget;
+
+        /*
+        If the robot needs to move forwards the distance input will be a positive number,
+        therefore the new position of the motors will be greater than the current position.
+        Alternatively, if the robot needs to move backwards the distance input will be a negative
+        number, therefore the new position of the motors will be lower than the current position.
+         */
+        newLeftTarget = leftDrive.getCurrentPosition() + (int) (distanceForEachMotor * COUNTS_PER_CM);
+        newRightTarget = rightDrive.getCurrentPosition() - (int) (distanceForEachMotor * COUNTS_PER_CM);
+
+        leftDrive.setTargetPosition(newLeftTarget);
+        rightDrive.setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        The absolute value of speed is set to the motors because
+        the motors will automatically rotate backwards if the target position is less than
+        the current position
+         */
+        leftDrive.setPower(Math.abs(speed));
+        rightDrive.setPower(Math.abs(speed));
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // This method allows the robot to turn left on the spot for a specified angle without using the IMU
+    public void encoderTurnRight(double speed, double rotationD, int timeoutS) {
+        final double ROBOT_CIRCUMFERENCE = 3.14159 * LENGTH_BETWEEN_WHEELS_CM;
+        double distanceForEachMotor = ((rotationD / 360) * ROBOT_CIRCUMFERENCE) / 2;
+
+        int newLeftTarget;
+        int newRightTarget;
+
+        /*
+        If the robot needs to move forwards the distance input will be a positive number,
+        therefore the new position of the motors will be greater than the current position.
+        Alternatively, if the robot needs to move backwards the distance input will be a negative
+        number, therefore the new position of the motors will be lower than the current position.
+         */
+        newLeftTarget = leftDrive.getCurrentPosition() - (int) (distanceForEachMotor * COUNTS_PER_CM);
+        newRightTarget = rightDrive.getCurrentPosition() + (int) (distanceForEachMotor * COUNTS_PER_CM);
+
+        leftDrive.setTargetPosition(newLeftTarget);
+        rightDrive.setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        The absolute value of speed is set to the motors because
+        the motors will automatically rotate backwards if the target position is less than
+        the current position
+         */
+        leftDrive.setPower(Math.abs(speed));
+        rightDrive.setPower(Math.abs(speed));
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
         }
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

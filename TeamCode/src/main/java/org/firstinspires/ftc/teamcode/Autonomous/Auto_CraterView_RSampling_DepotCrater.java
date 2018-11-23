@@ -1,23 +1,14 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 // Linear autonomous program imports
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.HardwareBot;
 
-import java.util.Locale;
-
 @Autonomous(name = "Auto - Crater view - Depot Crater", group = "SyntaxError")
-public class Auto_CraterView_DepotCrater extends LinearOpMode {
+public class Auto_CraterView_RSampling_DepotCrater extends LinearOpMode {
     HardwareBot robot = new HardwareBot();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -43,19 +34,62 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         telemetry.addData("Task", "Stage 1 - Latching off");
         telemetry.update();
         // Lower to the ground
-        robot.liftMotor.setPower(0.5);
-        sleep(2000);
+        robot.liftMotor.setPower(0.7);
+        sleep(4200);
         robot.liftMotor.setPower(0);
 
+        /*
         // Escape the latch`
         // Move forward for a tiny little distance
         robot.encoderDrive(0.2, 2, 2);
         // Do a on the spot left turn
-        robot.imuTurnLeft(0.2, 5, 2);
+        robot.encoderEachDrive(0.2, -5, 5, 5);
+        sleep(200);
+        // Move forward for a tiny little distance
+        robot.encoderDrive(0.2, 8, 4);
+        // Do a on the spot right turn
+        robot.encoderEachDrive(0.2, 5, -5, 5);
+        sleep(200);
+        */
+
+        /*
+        Stage 2 - Random sampling
+         */
+        /*
+        // Move backward to knock off te center mineral
+        robot.encoderDrive(0.7, 50, 10);
+        // Move forward to get away from the minerals zone
+        robot.encoderDrive(0.7, -20, 5);
+        */
+
+        /*
+        Stage 3 - Team marker in Depot
+         */
+        /*
+        // Turn left on the spot for 90 degrees
+        robot.encoderEachDrive(0.4, -20, 20, 5);
+        // Move backward for a large distance to make the robot in line with the depot
+        robot.encoderDrive(1, 100, 10);
+        // Turn left on the spot for 45 degrees
+        robot.encoderEachDrive(0.4, -10, 10, 5);
+        // Move backward for a large distance to get into the depot
+        robot.encoderDrive(1, 200, 10);
+        // Change the servo position to drop off the team marker
+        robot.markerServo.setPosition(robot.MARKER_SERVO_OPEN);
+        // Move forward for a short distance to get away from the team depot
+        robot.encoderDrive(1, 10, 5);
+        */
+
+        /*
+        Stage 4 - Park in Crater
+         */
+        // Move forward for a short distance to get into the crater
+        // robot.encoderDrive(1, 250, 10);
 
         /*
         Stage 2 - Getting to the minerals
          */
+        /*
         telemetry.addData("Task", "Stage 2 - Getting to the minerals");
         telemetry.update();
         // Move backward so that the robot can get away from the lander
@@ -69,6 +103,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         robot.imuTurnLeft(0.2, 90, 3);
         // Move backward so that the colour sensor can only see the first mineral at the moment
         robot.encoderDrive(0.2, 15, 3);
+        */
 
         /*
         Stage 3 - Sampling
@@ -167,6 +202,7 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         /*
         Stage 3 - Sampling (alternative)
          */
+        /*
         telemetry.addData("Task", "Sampling");
         telemetry.update();
         int leftMotorInitialPosition = robot.leftDrive.getCurrentPosition();
@@ -182,13 +218,11 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
             telemetry.addData("Green", robot.colourSensor.green());
             telemetry.addData("Blue ", robot.colourSensor.blue());
             telemetry.addData("Hue", hsvValues[0]);
-            /*
             relativeLayout.post(new Runnable() {
                 public void run() {
                     relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
                 }
             });
-            */
             // If the hue value is between 45 and 75 then stop the loop
             if (hsvValues[0] >= 45 && hsvValues[0] <= 75) { // Condition for detecting gold cube
                 stop = true;
@@ -204,10 +238,12 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         // Turn right for 90 degrees to return to the orginal angle before knocking oof the gold cube
         robot.imuTurnRight(0.3, 90, 5);
         robot.encoderDriveToPosition(0.4, leftMotorInitialPosition, rightMotorInitialPosition, 6);
+        */
 
         /*
         Stage 4 - Team marker in Depot
          */
+        /*
         telemetry.addData("Task", "Team marker in Depot");
         telemetry.update();
         // Turn right for 135 degrees in a zero point turn so that the robot is facing the depot
@@ -215,16 +251,18 @@ public class Auto_CraterView_DepotCrater extends LinearOpMode {
         // Drive forwards so that the robot is in the depot
         robot.encoderDrive(0.7, 200, 10);
         // Change the servo position to drop off the team marker
-        robot.markerServo.setPosition(robot.MARKER_SERVO_DROP);
+        robot.markerServo.setPosition(robot.MARKER_SERVO_OPEN);
+        */
 
         /*
         Stage 5 - Park in Crater
          */
+        /*
         telemetry.addData("Task", "Park in Crater");
         telemetry.update();
         // Drive backwards so that the robot goes into the crater
         robot.encoderDrive(1, 300, 10);
-
+        */
     }
 
 }

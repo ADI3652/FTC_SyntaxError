@@ -39,11 +39,24 @@ public class EncoderDriveSystemTesting extends LinearOpMode {
 
         /* When start button is pressed; run main code */
         // Move forward 50 cm
-        // robot.encoderDrive(0.5, 50, 10);
-        robot.encoderDriveLeftEncoder(0.5, 50, 10);
+        robot.encoderDrive(0.5, 50, 10);
+        // robot.encoderDriveLeftEncoder(0.5, 50, 10);
         // Move backward 50 cm
-        // robot.encoderDrive(0.5, -50, 10);
-        robot.encoderDriveLeftEncoder(0.5, -50, 10);
-        //
+        robot.encoderDrive(0.5, -50, 10);
+        // robot.encoderDriveLeftEncoder(0.5, -50, 10);
+
+        telemetry.addData("Info", "Moved forward and backward. Turning in 5 seconds.");
+        telemetry.update();
+        // Delay the turning for 5 seconds
+        sleep(5000);
+
+        robot.encoderEachDrive(0.6, -5, 5, 5);
+        robot.encoderEachDrive(0.6,  10, -10, 5);
+
+        // Turn left on the spot for 90 degrees
+        // robot.encoderTurnLeft(0.4, 90, 10);
+        // Turn right on the spot for 90 degrees
+        // robot.encoderTurnRight(0.4, 90, 10);
+
     }
 }

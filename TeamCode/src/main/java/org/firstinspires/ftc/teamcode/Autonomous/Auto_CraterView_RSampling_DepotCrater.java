@@ -4,20 +4,28 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.HardwareBot;
 
-@Autonomous(name = "Auto - Crater view - Depot Crater", group = "SyntaxError")
+@Autonomous(name = "Auto depo old view", group = "SyntaxError")
 public class Auto_CraterView_RSampling_DepotCrater extends LinearOpMode {
     HardwareBot robot = new HardwareBot();
     private ElapsedTime runtime = new ElapsedTime();
 
     double distanceOffset = 0;
 
+    public static final double MARKER_SERVO_CLOSE = 0;
+    public static final double MARKER_SERVO_OPEN = 1;
+    public static final double MINERAL_SERVO_DOWN= 0;
+    public static final double MINERAL_SERVO_UP = 1;
+
+
+
     @Override
     public void runOpMode() {
         /* When initialise button is pressed: */
         robot.init(hardwareMap, true, true);
+        int NewCM = 1;
+        int NewD = 1;
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
         float hsvValues[] = {0F,0F,0F};
@@ -31,12 +39,117 @@ public class Auto_CraterView_RSampling_DepotCrater extends LinearOpMode {
         /*
         Stage 1 - Latching off
          */
-        telemetry.addData("Task", "Stage 1 - Latching off");
+        telemetry.addData("Task", "Stage 1 - Lowering");
         telemetry.update();
         // Lower to the ground
-        robot.liftMotor.setPower(0.7);
-        sleep(4200);
+
+        robot.liftMotor.setPower(0.9);
+        sleep(4000);
         robot.liftMotor.setPower(0);
+
+        telemetry.addData("Task", "Stage 2 - Unlatching");
+        // escaping latch
+        robot.leftDrive.setPower(-0.5);
+        robot.rightDrive.setPower(0.5);
+        sleep(800);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        // moving backward
+        robot.leftDrive.setPower(1);
+        robot.rightDrive.setPower(1);
+        sleep(200);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+        // aligning
+        robot.leftDrive.setPower(0.5);
+        robot.rightDrive.setPower(-0.5);
+        sleep(800);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        robot.leftDrive.setPower(0.5);
+        robot.rightDrive.setPower(-0.5);
+        sleep(800);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        robot.leftDrive.setPower(1);
+        robot.rightDrive.setPower(1);
+        sleep(500);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        robot.leftDrive.setPower(-0.5);
+        robot.rightDrive.setPower(0.5);
+        sleep(800);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        // moving backward
+        robot.leftDrive.setPower(1);
+        robot.rightDrive.setPower(1);
+        sleep(4050);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+        // team marker drop off
+        robot.markerServo.setPosition(robot.MARKER_SERVO_OPEN);
+        sleep(200);
+        robot.leftDrive.setPower(-1);
+        robot.rightDrive.setPower(-1);
+        sleep(750);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        // face the crater by turning 45 right
+        robot.leftDrive.setPower(1);
+        robot.rightDrive.setPower(-1);
+        sleep(650);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        // run into the crater by moving forward
+        robot.leftDrive.setPower(-1);
+        robot.rightDrive.setPower(-1);
+        sleep(4000);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+
+/*
+        telemetry.addData("Task", "Stage 3 - Random sampling");
+        //drive forward a bit
+        robot.SingleEncoderDrive(1,-6*NewCM,4);
+
+        //re-align itself with minerals
+        robot.leftDrive.setPower(0.5);
+        robot.rightDrive.setPower(-0.5);
+        sleep(1500);
+
+        //drive over mineral
+        robot.SingleEncoderDrive(1,-6*NewCM,4);
+
+        //turn 90 degrees to the left
+        robot.imuTurnLeft(0.8, 90*NewD, 5);
+//unplug logic level shifter and plug back in
+        telemetry.addData("Task", "Stage 4 - Going to depot");
+        //drive to next turning point
+        robot.SingleEncoderDrive(1,-70*NewCM,5);
+
+        //turn 135 degrees to the left
+        robot.imuTurnLeft(0.8, 135*NewD, 5);
+
+        //drive to depot
+        robot.SingleEncoderDrive(1,-180,6);
+
+        telemetry.addData("Task", "Stage 5 - Dropping marker");
+        //drop marker
+        robot.markerServo.setPosition(MARKER_SERVO_OPEN);
+
+        telemetry.addData("Task", "Stage 6 - Going to crater");
+        //drive to crater
+        robot.SingleEncoderDrive(1,300,7);
+
 
         /*
         // Escape the latch`

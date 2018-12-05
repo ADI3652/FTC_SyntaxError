@@ -52,8 +52,8 @@ public class HardwareBot
     public BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     // Constants
-    public static final double MARKER_SERVO_CLOSE = 0;
-    public static final double MARKER_SERVO_OPEN = 1;
+    public static final double MARKER_SERVO_CLOSE = 0.95;
+    public static final double MARKER_SERVO_OPEN = 0.1;
     public static final double MINERAL_SERVO_DOWN= 0;
     public static final double MINERAL_SERVO_UP = 1;
 
@@ -234,6 +234,50 @@ public class HardwareBot
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+
+//Jack's code
+    public void SingleEncoderDrive(double speed, double distanceCM, int timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        /*
+        If the robot needs to move forwards the distance input will be a positive number,
+        therefore the new position of the motors will be greater than the current position.
+        Alternatively, if the robot needs to move backwards the distance input will be a negative
+        number, therefore the new position of the motors will be lower than the current position.
+         */
+        newLeftTarget = leftDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
+        newRightTarget = leftDrive.getCurrentPosition() - (int) (distanceCM * COUNTS_PER_CM);
+
+        leftDrive.setTargetPosition(newLeftTarget);
+        rightDrive.setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+        The absolute value of speed is set to the motors because
+        the motors will automatically rotate backwards if the target position is less than
+        the current position
+         */
+        leftDrive.setPower(Math.abs(speed));
+        rightDrive.setPower(Math.abs(speed));
+
+        double startTime = System.currentTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        double currentTime = 0;
+        while ((currentTime - startTime < timeoutS) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            currentTime = SystemClock.currentThreadTimeMillis() / 1000; // Dividing by 1000 converts it to seconds
+        }
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
+
 
     // This method allows each of its tracks to move forward or backward for a given distance at a given speed
     public void encoderEachDrive(double speed, double distanceLeftCM, double distanceRightCM, int timeoutS) {
